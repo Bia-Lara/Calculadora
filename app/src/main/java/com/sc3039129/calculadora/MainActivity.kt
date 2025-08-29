@@ -32,9 +32,17 @@ class MainActivity : AppCompatActivity() {
                 "+" -> latestValue + currentValueDouble
                 "-" -> latestValue - currentValueDouble
                 "*" -> latestValue * currentValueDouble
-                "/" -> if (currentValueDouble != 0.0) latestValue / currentValueDouble else Double.NaN
+                "/" -> {
+                    if (currentValueDouble != 0.0) {
+                        latestValue / currentValueDouble
+                    } else {
+                        result.text = "Não é possível dividir por zero"
+                        return
+                    }
+                }
                 else -> 0.0
             }
+
             result.text=resultCalculo.toString()
         }
 
@@ -74,5 +82,7 @@ class MainActivity : AppCompatActivity() {
             calculo.text = ""
             result.text=""
         }
+
+        binding.igual.setOnClickListener { calculate() }
     }
 }
