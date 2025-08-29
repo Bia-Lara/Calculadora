@@ -1,5 +1,6 @@
 package com.sc3039129.calculadora
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
@@ -13,57 +14,65 @@ import com.sc3039129.calculadora.databinding.ActivityMainBinding
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private var currentValue: String=""
+    private var latestValue: Double=0.0
+    private var operation: String?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         val calculo = binding.calculo
+        val result = binding.result
 
-        binding.um.setOnClickListener{
-            calculo.text = "${calculo.text}1"
+        fun calculate(){
+            val currentValueDouble: Double = currentValue.toDouble()
+            val resultCalculo = when (this.operation) {
+                "+" -> latestValue + currentValueDouble
+                "-" -> latestValue - currentValueDouble
+                "*" -> latestValue * currentValueDouble
+                "/" -> if (currentValueDouble != 0.0) latestValue / currentValueDouble else Double.NaN
+                else -> 0.0
+            }
+            result.text=resultCalculo.toString()
         }
 
-        binding.dois.setOnClickListener{
-            calculo.text = "${calculo.text}2"
+        fun addNumberToCalculo(number:String){
+            currentValue+= number
+            calculo.text= "${calculo.text}${number}"
+            if(this.operation != null){ calculate() }
         }
 
-        binding.tres.setOnClickListener{
-            calculo.text = "${calculo.text}3"
+        binding.um.setOnClickListener{addNumberToCalculo("1")}
+        binding.dois.setOnClickListener{addNumberToCalculo("2")}
+        binding.tres.setOnClickListener{ addNumberToCalculo("3") }
+        binding.quatro.setOnClickListener{ addNumberToCalculo("4") }
+        binding.cinco.setOnClickListener{ addNumberToCalculo("5") }
+        binding.seis.setOnClickListener{ addNumberToCalculo("6") }
+        binding.sete.setOnClickListener{ addNumberToCalculo("7") }
+        binding.oito.setOnClickListener{ addNumberToCalculo("8") }
+        binding.nove.setOnClickListener{ addNumberToCalculo("9") }
+        binding.zero.setOnClickListener{ addNumberToCalculo("0") }
+
+        @SuppressLint("SetTextI18n")
+        fun addOperationToCalculo(op:String){
+            this.operation= op
+            this.latestValue+= currentValue.toDouble()
+            this.currentValue=""
+            calculo.text= "${calculo.text}${operation}"
         }
 
-        binding.quatro.setOnClickListener{
-            calculo.text = "${calculo.text}4"
-        }
-
-        binding.cinco.setOnClickListener{
-            calculo.text = "${calculo.text}5"
-        }
-
-        binding.seis.setOnClickListener{
-            calculo.text = "${calculo.text}6"
-        }
-
-        binding.sete.setOnClickListener{
-            calculo.text = "${calculo.text}7"
-        }
-
-        binding.oito.setOnClickListener{
-            calculo.text = "${calculo.text}8"
-        }
-
-        binding.nove.setOnClickListener{
-            calculo.text = "${calculo.text}9"
-        }
-
-        binding.zero.setOnClickListener{
-            calculo.text = "${calculo.text}0"
-        }
+        binding.adicao.setOnClickListener {addOperationToCalculo("+")}
+        binding.subtracao.setOnClickListener {addOperationToCalculo("-")}
+        binding.divisao.setOnClickListener {addOperationToCalculo("/")}
+        binding.multiplicacao.setOnClickListener {addOperationToCalculo("*")}
 
         binding.ce.setOnClickListener {
+            currentValue=""
+            latestValue=0.0
             calculo.text = ""
+            result.text=""
         }
     }
 }
